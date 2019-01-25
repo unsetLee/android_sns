@@ -58,4 +58,10 @@ class LoginActivity : AppCompatActivity() {
             finish()
         }
     }
+
+
+    override fun onResume() { // 자동 로그인
+        super.onResume()
+        moveMainPage(auth?.currentUser)
+    }
 }
