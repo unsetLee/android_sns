@@ -6,6 +6,9 @@ import android.net.Uri // url 상위 개념이라는 듯, 링크뿐 아니라 �
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import com.example.myapplication.model.ContentDTO
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_add_photo.*
 import java.text.SimpleDateFormat
@@ -16,12 +19,16 @@ class AddPhotoActivity : AppCompatActivity() {
     val PICK_IMAGE_FROM_ALBUM = 0
     var storage : FirebaseStorage? = null
     var photoUri : Uri? = null
+    var auth : FirebaseAuth? = null
+    var firestore : FirebaseFirestore? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_photo)
 
         storage = FirebaseStorage.getInstance() // initialize
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
 
         //var photoPickerIntent = Intent(Intent.ACTION_PICK)
         //photoPickerIntent.type = "image/*"
@@ -57,6 +64,33 @@ class AddPhotoActivity : AppCompatActivity() {
 
         storageRef?.putFile(photoUri!!)?.addOnSuccessListener { taskSnapshot ->
             Toast.makeText(this, "업로드 성공", Toast.LENGTH_LONG).show()
+
+
+            var contentDTO = ContentDTO()
+            // 이미지 주소
+
+            var uri = taskSnapshot.downloadUrl
+            contentDTO.imageUrl = uri!!.toString()
+
+            //유저의 UID
+            contentDTO.uid = auth?.currentUser?.uid
+
+            //게시물 설명
+            contentDTO.explain = addphoto_edit_explain.text.toString()
+
+            //유저 아이디
+            contentDTO.userId = auth?.currentUser?.email
+
+            //게시물 업로드 시간
+            contentDTO.timestamp = System.currentTimeMillis() // seconds 까지 가져올 수 있음
+
+            firestore?.collection("images")?.document()?.set(contentDTO) //images라는 테이블
+
+            setResult(Activity.RESULT_OK)
+
+            finish()
+
         }
+
     }
 }

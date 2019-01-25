@@ -35,6 +35,17 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 }
             }
 
+            R.id.action_favorite_alarm -> {
+                var alertFragment = AlertFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.main_content, alertFragment).commit()
+                return true
+            }
+
+            R.id.action_account -> {
+                var userFragment = UserFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.main_content, userFragment).commit()
+                return true
+            }
         }
         return false
     }
