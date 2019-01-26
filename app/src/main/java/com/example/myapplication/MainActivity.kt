@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         when(item.itemId){
             R.id.action_home -> {
                 var detailviewFragment = DetailviewFragment()
-                supportFragmentManager.beginTransaction().replace(R.id.main_content, detailviewFragment).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.main_content, detailviewFragment).commit() //어떤 곳만 딱 바꾸려면 이거 쓰면됨!
                 return true
             }
 
@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         setContentView(R.layout.activity_main)
 
         bottom_navigation.setOnNavigationItemSelectedListener(this)
+        bottom_navigation.selectedItemId = R.id.action_home
 
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
     }
